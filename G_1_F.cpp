@@ -31,7 +31,7 @@ horizontalSentence(buildTree(s, l, r), "holy pine cheer")		→ false
  РЕШЕНИЕ:
 ************************************************************************/
 #include <string>
-#include <queue>
+#include "linked_queue.hpp"
 
 struct Node {
     std::string val;
@@ -50,25 +50,29 @@ bool horizontalSentence(Node* tree, std::string const& sentence) {
         return sentence.empty();
     }
 
-    std::queue<Node*> q;
-    q.push(tree);
+    LinkedQueue<Node*> q;
+    q.enqueue(tree);
+    int levelSize = 1, newLevelSize;
 
     while (!q.empty()) {
-        int levelSize = (int)q.size();
         std::string levelStr;
+        newLevelSize = 0;
         for (int i = 0; i < levelSize; ++i) {
-            Node* current = q.front();
-            q.pop();
-
+            Node* current = q.dequeue();
             if (i > 0)
                 levelStr += ' ';
             levelStr += current->val;
 
-            if (current->left)
-                q.push(current->left);
-            if (current->right)
-                q.push(current->right);
+            if (current->left) {
+                q.enqueue(current->left);
+                newLevelSize++;
+            }
+            if (current->right) {
+                q.enqueue(current->right);
+                newLevelSize++;
+            }
         }
+        levelSize = newLevelSize;
 
         if (levelStr == sentence)
             return true;
