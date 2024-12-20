@@ -12,6 +12,48 @@
  РЕШЕНИЕ:
 ************************************************************************/
 
+// Структура на възел от списъка
+struct node {
+    int dir, page;
+    node *prev, *next;
+};
+
+// Функция за търсене на следващата страница
+// dir > 0: търсене напред, dir < 0: търсене назад
+// Връща указател към намерената страница или nullptr (не би трябвало да се случи)
+node* find_next_page(node* start, int next_page, int direction, int &count) {
+    node* curr = start;
+    while (curr && curr->page != next_page) {
+        // Придвижваме се в зададената посока
+        curr = (direction > 0) ? curr->next : curr->prev;
+        count++; // всяко придвижване броим като обръщане на лист
+
+        if (curr->page < 0) {
+            // Чернова - премахваме
+            node* toDelete = curr;
+            if (toDelete->prev != nullptr)
+                toDelete->prev->next = toDelete->next;
+            if (toDelete->next != nullptr)
+                toDelete->next->prev = toDelete->prev;
+            // Позиционираме се пак така, че да продължим търсенето от предишната позиция
+            curr = (direction > 0) ? curr->prev : curr->next;
+            delete toDelete;
+            // Продължаваме търсенето отново в същата посока
+        }
+    }
+    return curr;
+}
+
+int pages(node* start) {
+    // Предполага се, че start сочи към страницата с page = 1
+    int count = 0;
+    node* curr = start;
+
+    while (curr->dir != 0)
+        curr = find_next_page(curr, curr->page + 1, curr->dir, count);
+
+    return count;
+}
 /***********************************************************************
  КРАЙ НА РЕШЕНИЕТО
 ************************************************************************/
