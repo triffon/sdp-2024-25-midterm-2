@@ -20,7 +20,8 @@ struct node { int code; node *prev, *next; }; в който се съдържа 
 списъка и преминава към гишето непосредствено отляво, ако code < 0 или 
 непосредствено отдясно, ако code > 0.
 Да се реализира функция int steps(node* start, int n), която връща броя 
-стъпки, след които асистентът стига до търсеното гише с код 0.
+стъпки, след които асистентът стига до търсеното гише с код 0, а при грешка
+връща -1.
 Пример: steps((-1 ⇔ 2 ⇔ 1 ⇔ 3 ⇔ -2 ⇔ 0 ⇔ 4), 2) = 8: 1,[3],-2,[2],1,[-2],1,0
 ************************************************************************/
 
@@ -36,7 +37,7 @@ int steps(node* start, int n) {
     int stepCount = 0;
     node* current = start;
 
-    while (current->code != 0) {
+    while (current && current->code != 0) {
         stepCount++;
 
         // Проверка дали това е n-тото гише
@@ -62,13 +63,15 @@ int steps(node* start, int n) {
             // Не е n-та стъпка, придвижваме се според code
             int code = current->code;
             if (code < 0)
-                for (int i = 0; i < -code; i++)
+                for (int i = 0; current && i < -code; i++)
                     current = current->prev;
             else
-                for (int i = 0; i < code; i++)
+                for (int i = 0; current && i < code; i++)
                     current = current->next;
         }
     }
+    if (current == nullptr)
+        return -1;
     return stepCount + 1;
 }
 /***********************************************************************

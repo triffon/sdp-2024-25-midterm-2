@@ -17,9 +17,8 @@
  реализира функция int pages(node* start), която връща броя листове, които
  асистентът трябва да отгърне, започвайки от листа с номер 1, указан от
  start, за да прочете всички листи подред докато стигне до последната 
- страница. Черновите се изхвърлят при първо преминаване през тях. Приема
- се, че няма изгубени листове и че посоките, в които трябва да се търси 
- следващия лист, са коректно указани.
+ страница. Черновите се изхвърлят при първо преминаване през тях. При
+ грешка функцията да връща -1.
  Пример: pages(5↓ ⇔ 3→ ⇔ -2→ ⇔ 1→ ⇔ -1← ⇔ 2← ⇔ -3→ ⇔ 4←) → 13
 ************************************************************************/
 
@@ -34,7 +33,7 @@ struct node {
 
 // Функция за търсене на следващата страница
 // dir > 0: търсене напред, dir < 0: търсене назад
-// Връща указател към намерената страница или nullptr (не би трябвало да се случи)
+// Връща указател към намерената страница или nullptr при грешка
 node* find_next_page(node* start, int next_page, int direction, int &count) {
     node* curr = start;
     while (curr && curr->page != next_page) {
@@ -42,7 +41,7 @@ node* find_next_page(node* start, int next_page, int direction, int &count) {
         curr = (direction > 0) ? curr->next : curr->prev;
         count++; // всяко придвижване броим като обръщане на лист
 
-        if (curr->page < 0) {
+        if (curr && curr->page < 0) {
             // Чернова - премахваме
             node* toDelete = curr;
             if (toDelete->prev != nullptr)
@@ -59,13 +58,18 @@ node* find_next_page(node* start, int next_page, int direction, int &count) {
 }
 
 int pages(node* start) {
-    // Предполага се, че start сочи към страницата с page = 1
     int count = 0;
     node* curr = start;
 
-    while (curr->dir != 0)
+    // ако curr не сочи към страницата с номер 1 - грешка
+    if (curr == nullptr || curr -> page != 1)
+        return -1;
+
+    while (curr && curr->dir != 0)
         curr = find_next_page(curr, curr->page + 1, curr->dir, count);
 
+    if (curr == nullptr)
+        return -1;
     return count;
 }
 /***********************************************************************
