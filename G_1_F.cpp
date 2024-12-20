@@ -27,10 +27,11 @@ horizontalSentence(buildTree(s, l, r), "holy pine gift Santa")	→ false
 horizontalSentence(buildTree(s, l, r), "holy pine cheer")		→ false
 ************************************************************************/
 
+#include <string>
+
 /***********************************************************************
  РЕШЕНИЕ:
 ************************************************************************/
-#include <string>
 #include "linked_queue.hpp"
 
 struct Node {

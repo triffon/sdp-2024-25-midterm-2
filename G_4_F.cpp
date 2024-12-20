@@ -27,10 +27,11 @@ verticalSentence(buildTree(s, l, r), "is star gift")		    → false
 verticalSentence(buildTree(s, l, r), "is bells star")		    → false
 ************************************************************************/
 
+#include <string>
+
 /***********************************************************************
  РЕШЕНИЕ:
 ************************************************************************/
-#include <string>
 
 struct Node {
     std::string val;
