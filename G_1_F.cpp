@@ -26,60 +26,15 @@ horizontalSentence(buildTree(s, l, r), "is it Christmas yet")	→ true
 horizontalSentence(buildTree(s, l, r), "holy pine gift Santa")	→ false
 horizontalSentence(buildTree(s, l, r), "holy pine cheer")		→ false
 ************************************************************************/
+#include <string>
 
 /***********************************************************************
  РЕШЕНИЕ:
 ************************************************************************/
-#include <string>
-#include "linked_queue.hpp"
 
-struct Node {
-    std::string val;
-    Node *left, *right;
-};
+// <подходящ тип> buildTree(std::string s[], int l[], int r[]);
 
-Node* buildTree(std::string s[], int l[], int r[], int index = 0) {
-    if (index == -1)
-        return nullptr;
-    return new Node{ s[index], buildTree(s, l, r, l[index]), buildTree(s, l, r, r[index]) };
-}
-
-bool horizontalSentence(Node* tree, std::string const& sentence) {
-    if (!tree) {
-        // Ако дървото е празно, връщаме true само ако изречението също е празно
-        return sentence.empty();
-    }
-
-    LinkedQueue<Node*> q;
-    q.enqueue(tree);
-    int levelSize = 1, newLevelSize;
-
-    while (!q.empty()) {
-        std::string levelStr;
-        newLevelSize = 0;
-        for (int i = 0; i < levelSize; ++i) {
-            Node* current = q.dequeue();
-            if (i > 0)
-                levelStr += ' ';
-            levelStr += current->val;
-
-            if (current->left) {
-                q.enqueue(current->left);
-                newLevelSize++;
-            }
-            if (current->right) {
-                q.enqueue(current->right);
-                newLevelSize++;
-            }
-        }
-        levelSize = newLevelSize;
-
-        if (levelStr == sentence)
-            return true;
-    }
-
-    return false;
-}
+// bool horizontalSentence(<подходящ тип> tree, std::string const& sentence);
 
 /***********************************************************************
  КРАЙ НА РЕШЕНИЕТО
@@ -91,7 +46,7 @@ bool horizontalSentence(Node* tree, std::string const& sentence) {
 /***********************************************************************
   РАЗКОМЕНТИРАЙТЕ СЛЕДВАЩИЯ РЕД, ЗА ДА ВКЛЮЧИТЕ ТЕСТОВЕТЕ
 ************************************************************************/
-#include "1_tests.hpp"
+//#include "1_tests.hpp"
 
 int main () {
     // пускане на тестовете

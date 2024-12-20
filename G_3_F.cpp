@@ -32,45 +32,9 @@ struct node {
 /***********************************************************************
  РЕШЕНИЕ:
 ************************************************************************/
-int steps(node* start, int n) {
-    int stepCount = 0;
-    node* current = start;
 
-    while (current->code != 0) {
-        stepCount++;
+int steps(node* start, int n);
 
-        // Проверка дали това е n-тото гише
-        if (stepCount % n == 0) {
-            // Понеже code != 0 (щом не сме приключили), изтриваме гишето
-            node* toDelete = current;
-            if (toDelete->prev != nullptr)
-                toDelete->prev->next = toDelete->next;
-            if (toDelete->next != nullptr)
-                toDelete->next->prev = toDelete->prev;
-
-            // Преминаваме към гишето вляво, ако code < 0, или вдясно, ако code > 0
-            if (current->code < 0)
-                current = toDelete->prev;
-            else
-                current = toDelete->next;
-
-            // Изтриваме текущото гише (динамична памет)
-            delete toDelete;
-
-            // На n-тата стъпка не правим придвижване по code, защото гишето е премахнато
-        } else {
-            // Не е n-та стъпка, придвижваме се според code
-            int code = current->code;
-            if (code < 0)
-                for (int i = 0; i < -code; i++)
-                    current = current->prev;
-            else
-                for (int i = 0; i < code; i++)
-                    current = current->next;
-        }
-    }
-    return stepCount + 1;
-}
 /***********************************************************************
  КРАЙ НА РЕШЕНИЕТО
 ************************************************************************/
@@ -81,7 +45,7 @@ int steps(node* start, int n) {
 /***********************************************************************
   РАЗКОМЕНТИРАЙТЕ СЛЕДВАЩИЯ РЕД, ЗА ДА ВКЛЮЧИТЕ ТЕСТОВЕТЕ
 ************************************************************************/
-#include "3_tests.hpp"
+//#include "3_tests.hpp"
 
 int main () {
     // пускане на тестовете

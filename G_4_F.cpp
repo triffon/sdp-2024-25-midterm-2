@@ -26,37 +26,16 @@ verticalSentence(buildTree(s, l, r), "is it Christmas yet")	→ true
 verticalSentence(buildTree(s, l, r), "is star gift")		    → false
 verticalSentence(buildTree(s, l, r), "is bells star")		    → false
 ************************************************************************/
+#include <string>
 
 /***********************************************************************
  РЕШЕНИЕ:
 ************************************************************************/
-#include <string>
 
-struct Node {
-    std::string val;
-    Node *left, *right;
-};
+// <подходящ тип> buildTree(std::string s[], int l[], int r[]); {
 
-Node* buildTree(std::string s[], int l[], int r[], int index = 0) {
-    if (index == -1)
-        return nullptr;
-    return new Node{ s[index], buildTree(s, l, r, l[index]), buildTree(s, l, r, r[index]) };
-}
+// bool verticalSentence(<подходящ тип> tree, std::string const& sentence);
 
-bool verticalSentence(Node* root, std::string const& sentence, std::string currentPath = "") {
-    if (!root) return false;
-
-    // Ако currentPath е празен, това е първата дума, иначе добавяме интервал и след това думата
-    std::string newPath = currentPath.empty() ? root->val : currentPath + " " + root->val;
-
-    // Ако сме на листо (няма деца), проверяваме дали сме намерили изречението
-    if (!root->left && !root->right)
-        return newPath == sentence;
-
-    // Проверяваме рекурсивно по лявото и дясното поддърво
-    return verticalSentence(root->left, sentence, newPath) ||
-           verticalSentence(root->right, sentence, newPath);
-}
 /***********************************************************************
  КРАЙ НА РЕШЕНИЕТО
 ************************************************************************/
@@ -67,7 +46,7 @@ bool verticalSentence(Node* root, std::string const& sentence, std::string curre
 /***********************************************************************
   РАЗКОМЕНТИРАЙТЕ СЛЕДВАЩИЯ РЕД, ЗА ДА ВКЛЮЧИТЕ ТЕСТОВЕТЕ
 ************************************************************************/
-#include "4_tests.hpp"
+//#include "4_tests.hpp"
 
 int main () {
     // пускане на тестовете
