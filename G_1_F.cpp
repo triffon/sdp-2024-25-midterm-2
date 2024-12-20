@@ -17,8 +17,8 @@
 б) Да се реализира функция
 bool horizontalSentence(<тип> tree, std::string const& sentence),
 която проверява дали има ниво в дървото tree, чиито думи, разделени с
-интервал, съставят изречението sentence. Представянето на дървото е по
-ваш избор.
+интервал, съставят изречението sentence и се грижи за освобождаването
+на паметта.
 Пример: std::string s[] = {"mistletoe","snow","bells","is","it","Christmas",
                    	     "yet","holly","pine","cheer","gift","Santa"};
 int l[] = {1,3,5,7,9,10,-1,-1,-1,-1,-1,-1}, r[] = {2,4,6,8,-1,11,-1,-1,-1,-1,-1,-1};
@@ -33,43 +33,41 @@ horizontalSentence(buildTree(s, l, r), "holy pine cheer")		→ false
  РЕШЕНИЕ:
 ************************************************************************/
 #include "linked_queue.hpp"
+#include "binary_tree.hpp"
 
-struct Node {
-    std::string val;
-    Node *left, *right;
-};
-
-Node* buildTree(std::string s[], int l[], int r[], int index = 0) {
+using StringTree = BinaryTree<std::string>;
+StringTree buildTree(std::string s[], int l[], int r[], int index = 0) {
     if (index == -1)
-        return nullptr;
-    return new Node{ s[index], buildTree(s, l, r, l[index]), buildTree(s, l, r, r[index]) };
+        return StringTree();
+    return StringTree(s[index], buildTree(s, l, r, l[index]), buildTree(s, l, r, r[index]));
 }
 
-bool horizontalSentence(Node* tree, std::string const& sentence) {
-    if (!tree) {
+bool horizontalSentence(StringTree tree, std::string const& sentence) {
+    if (tree.empty()) {
         // Ако дървото е празно, връщаме true само ако изречението също е празно
         return sentence.empty();
     }
 
-    LinkedQueue<Node*> q;
-    q.enqueue(tree);
+    using Position = StringTree::Position;
+    LinkedQueue<Position> q;
+    q.enqueue(tree.rootPos());
     int levelSize = 1, newLevelSize;
 
     while (!q.empty()) {
         std::string levelStr;
         newLevelSize = 0;
         for (int i = 0; i < levelSize; ++i) {
-            Node* current = q.dequeue();
+            Position current = q.dequeue();
             if (i > 0)
                 levelStr += ' ';
-            levelStr += current->val;
+            levelStr += *current;
 
-            if (current->left) {
-                q.enqueue(current->left);
+            if (-current) {
+                q.enqueue(-current);
                 newLevelSize++;
             }
-            if (current->right) {
-                q.enqueue(current->right);
+            if (+current) {
+                q.enqueue(+current);
                 newLevelSize++;
             }
         }

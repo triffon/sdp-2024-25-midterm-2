@@ -17,8 +17,8 @@
 б) Да се реализира функция
 bool verticalSentence(<тип> tree, std::string const& sentence),
 която проверява дали има път от корен до листо в дървото tree, чиито думи,
-разделени с интервал, съставят изречението sentence.
-Представянето на дървото е по ваш избор.
+разделени с интервал, съставят изречението sentence и  и се грижи за
+освобождаването на паметта.
 Пример: std::string s[] = {"is","it","bells","Christmas","pine",
                         	"star","holly","yet","cheer","gift"};
 int l[] = {1, 3,4,6,-1,8,-1,-1,-1,-1}, r[] = {2,-1,5,7,-1,9,-1,-1,-1,-1};
@@ -33,30 +33,32 @@ verticalSentence(buildTree(s, l, r), "is bells star")		    → false
  РЕШЕНИЕ:
 ************************************************************************/
 
-struct Node {
-    std::string val;
-    Node *left, *right;
-};
+#include "binary_tree.hpp"
 
-Node* buildTree(std::string s[], int l[], int r[], int index = 0) {
+using StringTree = BinaryTree<std::string>;
+StringTree buildTree(std::string s[], int l[], int r[], int index = 0) {
     if (index == -1)
-        return nullptr;
-    return new Node{ s[index], buildTree(s, l, r, l[index]), buildTree(s, l, r, r[index]) };
+        return StringTree();
+    return StringTree(s[index], buildTree(s, l, r, l[index]), buildTree(s, l, r, r[index]));
 }
 
-bool verticalSentence(Node* root, std::string const& sentence, std::string currentPath = "") {
-    if (!root) return false;
+bool verticalSentenceHelper(StringTree::Position pos, std::string const& sentence, std::string currentPath) {
+    if (!pos) return false;
 
     // Ако currentPath е празен, това е първата дума, иначе добавяме интервал и след това думата
-    std::string newPath = currentPath.empty() ? root->val : currentPath + " " + root->val;
+    std::string newPath = currentPath == "" ? *pos : currentPath + " " + *pos;
 
     // Ако сме на листо (няма деца), проверяваме дали сме намерили изречението
-    if (!root->left && !root->right)
+    if (!-pos && !+pos)
         return newPath == sentence;
 
     // Проверяваме рекурсивно по лявото и дясното поддърво
-    return verticalSentence(root->left, sentence, newPath) ||
-           verticalSentence(root->right, sentence, newPath);
+    return verticalSentenceHelper(-pos, sentence, newPath) ||
+           verticalSentenceHelper(+pos, sentence, newPath);
+}
+
+bool verticalSentence(StringTree tree, std::string const& sentence) {
+    return verticalSentenceHelper(tree.rootPos(), sentence, "");
 }
 /***********************************************************************
  КРАЙ НА РЕШЕНИЕТО
