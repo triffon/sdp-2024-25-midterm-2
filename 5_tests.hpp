@@ -12,7 +12,7 @@ TEST_CASE("Отрицателен тест") {
     CHECK(!permuteOrSingle("Jingle bells jingle bells",
                            "jingle bells hooray",
                os));
-    std::istringstream iss(os.str());
+    std::istringstream iss(os.str() + " ")
     std::string word1, word2;
     CHECK((iss >> word1 >> word2).good());
     bool test = (word1 == "Jingle" && word2 == "hooray") || (word1 == "hooray" && word2 == "Jingle");
